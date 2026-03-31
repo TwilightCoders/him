@@ -16,6 +16,12 @@ module Her
           @name = @opts[:name]
         end
 
+        # Returns the foreign key to use when building child records,
+        # respecting the :foreign_key option or falling back to convention.
+        def foreign_key
+          @opts[:foreign_key]&.to_sym || :"#{@parent.singularized_resource_name}_id"
+        end
+
         # @private
         def self.proxy(parent, opts = {})
           AssociationProxy.new new(parent, opts)
