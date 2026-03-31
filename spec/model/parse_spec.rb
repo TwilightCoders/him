@@ -358,6 +358,39 @@ describe Her::Model::Parse do
     end
   end
 
+  context "when associations reference each other" do
+    before do
+      Her::API.setup url: "https://api.example.com" do |builder|
+        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use Faraday::Request::UrlEncoded
+      end
+
+      Her::API.default_api.connection.adapter :test do |stub|
+        stub.get("/users/1") { |env| [200, {}, { id: 1, name: "Tobias", comments: [{ id: 2, body: "Hey!", user_id: 1 }] }.to_json] }
+      end
+
+      spawn_model "Foo::User" do
+        has_many :comments, class_name: "Foo::Comment"
+      end
+
+      spawn_model "Foo::Comment" do
+        belongs_to :user, class_name: "Foo::User"
+      end
+    end
+
+    it "does not infinitely loop when calling to_params with cyclic associations" do
+      user = Foo::User.find(1)
+      expect { Timeout.timeout(5) { user.to_params } }.not_to raise_error
+    end
+
+    it "does not include belongs_to parent data in nested to_params" do
+      user = Foo::User.find(1)
+      params = user.to_params
+      comment_params = params[:comments].first
+      expect(comment_params).not_to have_key(:user)
+    end
+  end
+
   context "when parse_root_in_json set json_api to true" do
     before do
       Her::API.setup url: "https://api.example.com" do |builder|
