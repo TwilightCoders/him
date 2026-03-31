@@ -49,8 +49,17 @@ module Her
           return @opts[:default].try(:dup) if @parent.new?
 
           path = build_association_path -> { "#{@parent.request_path(@params)}#{@opts[:path]}" }
-          @klass.get(path, @params).tap do |result|
+          request_association(path, @params).tap do |result|
             @cached_result = result unless @params.any?
+          end
+        end
+
+        # @private
+        def request_association(path, params)
+          if @opts[:default].is_a?(Array)
+            @klass.get_collection(path, params)
+          else
+            @klass.get(path, params)
           end
         end
 
