@@ -345,6 +345,11 @@ describe Her::Model::Associations do
         expect(user.posts.first.admin.object_id).to eq(user.object_id)
       end
 
+      it "does not set the inverse of a has_many as an attribute" do
+        first_comment = user.comments.where(foo_id: 1).first
+        expect(first_comment.attributes.keys).not_to include("user")
+      end
+
       it "fetches has_many data even if it was included, only if called with parameters" do
         expect(user.comments.where(foo_id: 1).length).to eq(1)
       end

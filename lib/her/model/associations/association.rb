@@ -4,7 +4,7 @@ module Her
       class Association
 
         # @private
-        attr_accessor :params
+        attr_accessor :params, :cached_result
 
         # @private
         def initialize(parent, opts = {})
