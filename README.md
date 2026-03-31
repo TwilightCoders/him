@@ -1,8 +1,9 @@
+# Him
 
-# Her
-
-Her is an ORM (Object Relational Mapper) that maps REST resources to Ruby objects.
+Him is an ORM (Object Relational Mapper) that maps REST resources to Ruby objects.
 It is designed to build applications that are powered by a RESTful API instead of a database.
+
+Forked from [Her](https://github.com/remi/her) and modernized for current Ruby/Rails.
 
 **Requirements:** Ruby >= 3.1, ActiveModel >= 6.1, Faraday >= 2.0
 
@@ -13,10 +14,10 @@ It is designed to build applications that are powered by a RESTful API instead o
 In your Gemfile, add:
 
 ```ruby
-gem "her"
+gem "him"
 ```
 
-That’s it!
+That’s it! Him provides a `Her = Him` alias, so existing code using `Her::Model` will continue to work.
 
 ## Usage
 
@@ -1003,4 +1004,4 @@ See [CONTRIBUTING.md](https://github.com/remiprev/her/blob/master/CONTRIBUTING.m
 
 ## License
 
-Her is © 2012-2026 [Rémi Prévost](http://exomel.com) and may be freely distributed under the [MIT license](https://github.com/remiprev/her/blob/master/LICENSE). See the `LICENSE` file.
+Him is © 2026 [Dale Stevens](https://github.com/voltechs), based on Her © 2012-2021 [Rémi Prévost](http://exomel.com). Freely distributed under the [MIT license](https://github.com/TwilightCoders/him/blob/main/LICENSE).

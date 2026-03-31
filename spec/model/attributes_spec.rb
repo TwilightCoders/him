@@ -2,7 +2,7 @@
 
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Attributes do
+describe Him::Model::Attributes do
   context "mapping data to Ruby objects" do
     before { spawn_model "Foo::User" }
 
@@ -100,8 +100,8 @@ describe Her::Model::Attributes do
 
   context "checking resource equality" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, fullname: "Lindsay Fünke" }.to_json] }
@@ -163,8 +163,8 @@ describe Her::Model::Attributes do
 
   context "handling metadata and errors" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.adapter :test do |stub|
           stub.post("/users") { [200, {}, { id: 1, fullname: "Tobias Fünke" }.to_json] }
         end
@@ -206,8 +206,8 @@ describe Her::Model::Attributes do
   context "overwriting default attribute methods" do
     context "for getter method" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, fullname: "Tobias Fünke", document: { url: "http://example.com" } }.to_json] }
           end
@@ -231,8 +231,8 @@ describe Her::Model::Attributes do
 
     context "for setter method" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, fullname: "Tobias Fünke", document: { url: "http://example.com" } }.to_json] }
           end
@@ -268,8 +268,8 @@ describe Her::Model::Attributes do
 
     context "for predicate method" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, fullname: "Lindsay Fünke", document: { url: nil } }.to_json] }
             stub.get("/users/2") { [200, {}, { id: 1, fullname: "Tobias Fünke", document: { url: "http://example.com" } }.to_json] }

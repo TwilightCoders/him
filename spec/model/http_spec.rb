@@ -2,15 +2,15 @@
 
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::HTTP do
+describe Him::Model::HTTP do
   context "binding a model with an API" do
-    let(:api1) { Her::API.new url: "https://api1.example.com" }
-    let(:api2) { Her::API.new url: "https://api2.example.com" }
+    let(:api1) { Him::API.new url: "https://api1.example.com" }
+    let(:api2) { Him::API.new url: "https://api2.example.com" }
 
     before do
       spawn_model("Foo::User")
       spawn_model("Foo::Comment")
-      Her::API.setup url: "https://api.example.com"
+      Him::API.setup url: "https://api.example.com"
     end
 
     context "when binding a model to its superclass' her_api" do
@@ -37,8 +37,8 @@ describe Her::Model::HTTP do
 
   context "making HTTP requests" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { [200, {}, [{ id: 1 }].to_json] }
@@ -144,8 +144,8 @@ describe Her::Model::HTTP do
 
   context "setting custom HTTP requests" do
     before do
-      Her::API.setup url: "https://api.example.com" do |connection|
-        connection.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |connection|
+        connection.use Him::Middleware::FirstLevelParseJSON
         connection.adapter :test do |stub|
           stub.get("/users/popular") { [200, {}, [{ id: 1 }, { id: 2 }].to_json] }
           stub.post("/users/from_default") { [200, {}, { id: 4 }.to_json] }

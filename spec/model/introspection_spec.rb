@@ -2,11 +2,11 @@
 
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Introspection do
+describe Him::Model::Introspection do
   context "introspecting a resource" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users")     { [200, {}, { id: 1, name: "Tobias Funke" }.to_json] }
@@ -54,8 +54,8 @@ describe Her::Model::Introspection do
 
     describe "#inspect with cyclic associations" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, name: "Tobias", comments: [{ id: 2, body: "Hey!", user_id: 1 }] }.to_json] }
           end

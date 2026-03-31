@@ -2,10 +2,10 @@ module Her
   module Testing
     module Macros
       module ModelMacros
-        # Create a class and automatically inject Her::Model into it
+        # Create a class and automatically inject Him::Model into it
         def spawn_model(klass, options = {}, &block)
           super_class = options[:super_class]
-          model_type = options[:type] || Her::Model
+          model_type = options[:type] || Him::Model
           new_class = if super_class
                         Class.new(super_class)
                       else

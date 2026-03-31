@@ -2,12 +2,12 @@
 
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::ORM do
+describe Him::Model::ORM do
   context "mapping data to Ruby objects" do
     before do
-      api = Her::API.new
+      api = Him::API.new
       api.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, name: "Tobias Fünke" }.to_json] }
@@ -76,9 +76,9 @@ describe Her::Model::ORM do
 
   context "mapping data, metadata and error data to Ruby objects" do
     before do
-      api = Her::API.new
+      api = Him::API.new
       api.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::SecondLevelParseJSON
+        builder.use Him::Middleware::SecondLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { [200, {}, { data: [{ id: 1, name: "Tobias Fünke" }, { id: 2, name: "Lindsay Fünke" }], metadata: { total_pages: 10, next_page: 2 }, errors: %w[Oh My God] }.to_json] }
@@ -126,9 +126,9 @@ describe Her::Model::ORM do
 
   context "mapping data, metadata and error data in string keys to Ruby objects" do
     before do
-      api = Her::API.new
+      api = Him::API.new
       api.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::SecondLevelParseJSON
+        builder.use Him::Middleware::SecondLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { [200, {}, { data: [{ id: 1, name: "Tobias Fünke" }, { id: 2, name: "Lindsay Fünke" }], metadata: { total_pages: 10, next_page: 2 }, errors: %w[Oh My God] }.to_json] }
@@ -164,9 +164,9 @@ describe Her::Model::ORM do
 
   context "defining custom getters and setters" do
     before do
-      api = Her::API.new
+      api = Him::API.new
       api.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, friends: %w[Maeby GOB Anne] }.to_json] }
@@ -209,9 +209,9 @@ describe Her::Model::ORM do
 
   context "finding resources" do
     before do
-      api = Her::API.new
+      api = Him::API.new
       api.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, age: 42 }.to_json] }
@@ -329,8 +329,8 @@ describe Her::Model::ORM do
 
     context "when request_new_object_on_build is set" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/new") { |env| ok! id: nil, fullname: params(env)[:fullname], email: "tobias@bluthcompany.com" }
@@ -352,8 +352,8 @@ describe Her::Model::ORM do
 
   context "creating resources" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users") { |env| [200, {}, { id: 1, fullname: Faraday::Utils.parse_query(env[:body])["fullname"], email: Faraday::Utils.parse_query(env[:body])["email"] }.to_json] }
@@ -391,7 +391,7 @@ describe Her::Model::ORM do
 
     it "raises ResourceInvalid when #save! gets errors" do
       @company = Foo::Company.new
-      expect { @company.save! }.to raise_error Her::Errors::ResourceInvalid, "Remote validation failed: name is required"
+      expect { @company.save! }.to raise_error Him::Errors::ResourceInvalid, "Remote validation failed: name is required"
     end
 
     it "don't overwrite data if response is empty" do
@@ -409,8 +409,8 @@ describe Her::Model::ORM do
 
   context "updating resources" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, fullname: "Tobias Fünke", admin: false }.to_json] }
@@ -443,7 +443,7 @@ describe Her::Model::ORM do
     end
 
     it "raises ResourceInvalid when .save_existing! has errors" do
-      expect { Foo::User.save_existing!(2, fullname: "Lindsay Fünke") }.to raise_error(Her::Errors::ResourceInvalid)
+      expect { Foo::User.save_existing!(2, fullname: "Lindsay Fünke") }.to raise_error(Him::Errors::ResourceInvalid)
     end
 
     it "handle resource update through #save on an existing resource" do
@@ -516,8 +516,8 @@ describe Her::Model::ORM do
   context "deleting resources" do
     let(:status) { 200 }
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, fullname: "Tobias Fünke", active: true }.to_json] }
@@ -543,7 +543,7 @@ describe Her::Model::ORM do
       child_user_klass.destroy_existing(1)
       @child_user = child_user_klass.create(name: "George Michael Bluth")
 
-      expect { @child_user.save! }.to raise_error(Her::Errors::ResourceInvalid)
+      expect { @child_user.save! }.to raise_error(Him::Errors::ResourceInvalid)
     end
 
     it "handle resource deletion through the .destroy class method" do
@@ -575,8 +575,8 @@ describe Her::Model::ORM do
 
     context "with params" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.delete("/users/1?delete_type=soft") { [200, {}, { id: 1, fullname: "Lindsay Fünke", active: false }.to_json] }
@@ -601,15 +601,15 @@ describe Her::Model::ORM do
 
   context "customizing HTTP methods" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
     end
 
     context "create" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        Him::API.default_api.connection.adapter :test do |stub|
           stub.put("/users") { [200, {}, { id: 1, fullname: "Tobias Fünke" }.to_json] }
         end
         spawn_model "Foo::User" do
@@ -642,7 +642,7 @@ describe Her::Model::ORM do
 
     context "update" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        Him::API.default_api.connection.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, fullname: "Lindsay Fünke" }.to_json] }
           stub.post("/users/1") { [200, {}, { id: 1, fullname: "Tobias Fünke" }.to_json] }
         end
@@ -665,8 +665,8 @@ describe Her::Model::ORM do
 
   context "registering callbacks" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users/1") { [200, {}, { id: 1, fullname: "Tobias Fünke" }.to_json] }

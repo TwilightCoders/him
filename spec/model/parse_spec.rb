@@ -2,15 +2,15 @@
 
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Parse do
+describe Him::Model::Parse do
   context "when include_root_in_json is set" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      Him::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { user: { id: 1, fullname: params(env)[:user][:fullname] } }.to_json] }
         stub.post("/users/admins") { |env| [200, {}, { user: { id: 1, fullname: params(env)[:user][:fullname] } }.to_json] }
       end
@@ -153,15 +153,15 @@ describe Her::Model::Parse do
 
   context "when parse_root_in_json is set" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
     end
 
     context "to true" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        Him::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { [200, {}, { user: { id: 1, fullname: "Lindsay Fünke" } }.to_json] }
           stub.get("/users") { [200, {}, [{ user: { id: 1, fullname: "Lindsay Fünke" } }].to_json] }
           stub.get("/users/admins") { [200, {}, [{ user: { id: 1, fullname: "Lindsay Fünke" } }].to_json] }
@@ -243,7 +243,7 @@ describe Her::Model::Parse do
 
     context "to a symbol" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        Him::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { [200, {}, { person: { id: 1, fullname: "Lindsay Fünke" } }.to_json] }
         end
 
@@ -259,7 +259,7 @@ describe Her::Model::Parse do
 
     context "in the parent class" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        Him::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { [200, {}, { user: { id: 1, fullname: "Lindsay Fünke" } }.to_json] }
           stub.get("/users") { [200, {}, { users: [{ id: 1, fullname: "Lindsay Fünke" }] }.to_json] }
         end
@@ -286,7 +286,7 @@ describe Her::Model::Parse do
 
     context "to true with format: :active_model_serializers" do
       before do
-        Her::API.default_api.connection.adapter :test do |stub|
+        Him::API.default_api.connection.adapter :test do |stub|
           stub.post("/users") { [200, {}, { user: { id: 1, fullname: "Lindsay Fünke" } }.to_json] }
           stub.get("/users") { [200, {}, { users: [{ id: 1, fullname: "Lindsay Fünke" }] }.to_json] }
           stub.get("/users/admins") { [200, {}, { users: [{ id: 1, fullname: "Lindsay Fünke" }] }.to_json] }
@@ -331,8 +331,8 @@ describe Her::Model::Parse do
 
   context "when to_params is set" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.post("/users") { |env| ok! id: 1, fullname: params(env)["fullname"] }
@@ -360,8 +360,8 @@ describe Her::Model::Parse do
 
   context "when parse_root_in_json is true without AMS format" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.adapter :test do |stub|
           stub.get("/users") { [200, {}, { users: [{ id: 1, name: "Tobias" }] }.to_json] }
           stub.get("/users/1") { [200, {}, { user: { id: 1, name: "Tobias" } }.to_json] }
@@ -387,12 +387,12 @@ describe Her::Model::Parse do
 
   context "when associations reference each other" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      Him::API.default_api.connection.adapter :test do |stub|
         stub.get("/users/1") { |env| [200, {}, { id: 1, name: "Tobias", comments: [{ id: 2, body: "Hey!", user_id: 1 }] }.to_json] }
       end
 
@@ -420,7 +420,7 @@ describe Her::Model::Parse do
 
   context "when parsed_data has string keys" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
+      Him::API.setup url: "https://api.example.com" do |builder|
         builder.use Class.new(Faraday::Middleware) {
           def on_complete(env)
             env[:body] = {
@@ -453,8 +453,8 @@ describe Her::Model::Parse do
 
   context "when parse_root_in_json set json_api to true" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
         builder.adapter :test do |stub|
           stub.get("/users") { [200, {}, { users: [{ id: 1, fullname: "Lindsay Fünke" }] }.to_json] }
@@ -509,12 +509,12 @@ describe Her::Model::Parse do
 
   context "when include_root_in_json set json_api" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      Him::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { users: [{ id: 1, fullname: params(env)[:users][:fullname] }] }.to_json] }
       end
     end
@@ -542,12 +542,12 @@ describe Her::Model::Parse do
 
   context "when send_only_modified_attributes is set" do
     before do
-      Her::API.setup url: "https://api.example.com", send_only_modified_attributes: true do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com", send_only_modified_attributes: true do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      Him::API.default_api.connection.adapter :test do |stub|
         stub.get("/users/1") { [200, {}, { id: 1, first_name: "Gooby", last_name: "Pls" }.to_json] }
       end
 
@@ -585,7 +585,7 @@ describe Her::Model::Parse do
 
       @model = klass.new
 
-      Her::API.setup
+      Him::API.setup
       spawn_model 'Foo::User'
     end
 
@@ -598,12 +598,12 @@ describe Her::Model::Parse do
 
   context "when attribute uses the same name as root element" do
     before do
-      Her::API.setup url: "https://api.example.com" do |builder|
-        builder.use Her::Middleware::FirstLevelParseJSON
+      Him::API.setup url: "https://api.example.com" do |builder|
+        builder.use Him::Middleware::FirstLevelParseJSON
         builder.use Faraday::Request::UrlEncoded
       end
 
-      Her::API.default_api.connection.adapter :test do |stub|
+      Him::API.default_api.connection.adapter :test do |stub|
         stub.post("/users") { |env| [200, {}, { user: "foobar", id: 1, fullname: params(env)[:fullname] }.to_json] }
       end
 

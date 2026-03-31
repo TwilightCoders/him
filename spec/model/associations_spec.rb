@@ -2,7 +2,7 @@
 
 require File.join(File.dirname(__FILE__), "../spec_helper.rb")
 
-describe Her::Model::Associations do
+describe Him::Model::Associations do
   context "setting associations without details" do
     before { spawn_model "Foo::User" }
     subject(:associations) { Foo::User.associations }
@@ -307,8 +307,8 @@ describe Her::Model::Associations do
 
     context "with included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, name: "Tobias Fünke", comments: [{ comment: { id: 2, body: "Tobias, you blow hard!", user_id: 1 } }, { comment: { id: 3, body: "I wouldn't mind kissing that man between the cheeks, so to speak", user_id: 1 } }], role: { id: 1, body: "Admin" }, organization: { id: 1, name: "Bluth Company" }, organization_id: 1 }.to_json] }
@@ -393,8 +393,8 @@ describe Her::Model::Associations do
 
     context "without included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/2") { [200, {}, { id: 2, name: "Lindsay Fünke", organization_id: 2 }.to_json] }
@@ -474,8 +474,8 @@ describe Her::Model::Associations do
 
     context "without included parent data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, name: "Lindsay Fünke", organization_id: 2 }.to_json] }
@@ -529,8 +529,8 @@ describe Her::Model::Associations do
 
     context "after" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.post("/users") { [200, {}, { id: 5, name: "Mr. Krabs", comments: [{ comment: { id: 99, body: "Rodríguez, nasibisibusi?", user_id: 5 } }], role: { id: 1, body: "Admin" }, organization: { id: 3, name: "Krusty Krab" }, organization_id: 3 }.to_json] }
@@ -579,8 +579,8 @@ describe Her::Model::Associations do
 
     context "without included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/2") { [200, {}, { id: 2, name: "Lindsay Fünke", organization_id: 2 }.to_json] }
@@ -612,8 +612,8 @@ describe Her::Model::Associations do
 
     context "without included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.path_prefix = 'special'
           builder.adapter :test do |stub|
@@ -659,8 +659,8 @@ describe Her::Model::Associations do
 
     context "with included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { user: { id: 1, name: "Tobias Fünke", comments: [{ id: 2, body: "Tobias, you blow hard!", user_id: 1 }, { id: 3, body: "I wouldn't mind kissing that man between the cheeks, so to speak", user_id: 1 }], role: { id: 1, body: "Admin" }, organization: { id: 1, name: "Bluth Company" }, organization_id: 1 } }.to_json] }
@@ -732,8 +732,8 @@ describe Her::Model::Associations do
 
     context "without included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/2") { [200, {}, { user: { id: 2, name: "Lindsay Fünke", organization_id: 1 } }.to_json] }
@@ -778,8 +778,8 @@ describe Her::Model::Associations do
 
     context "with included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1, name: "Tobias Fünke", organization: { id: 1, name: "Bluth Company Inc." }, organization_id: 1 }.to_json] }
@@ -816,8 +816,8 @@ describe Her::Model::Associations do
 
     context "without included data" do
       before(:context) do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/2") { [200, {}, { id: 2, name: "Lindsay Fünke", organization_id: 1 }.to_json] }
@@ -866,7 +866,7 @@ describe Her::Model::Associations do
     end
 
     it "can return the association object" do
-      expect(subject.association).to be_kind_of Her::Model::Associations::Association
+      expect(subject.association).to be_kind_of Him::Model::Associations::Association
     end
 
     it "still can call fetch via the association" do
@@ -919,8 +919,8 @@ describe Her::Model::Associations do
       let(:comment) { user.comments.create(body: "Hello!") }
 
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/10") { [200, {}, { id: 10 }.to_json] }
@@ -928,8 +928,8 @@ describe Her::Model::Associations do
           end
         end
 
-        Foo::User.use_api Her::API.default_api
-        Foo::Comment.use_api Her::API.default_api
+        Foo::User.use_api Him::API.default_api
+        Foo::Comment.use_api Him::API.default_api
       end
 
       it "takes the parent primary key and saves the resource" do
@@ -942,8 +942,8 @@ describe Her::Model::Associations do
 
     context "with #build appending to existing collection" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/1") { [200, {}, { id: 1 }.to_json] }
@@ -951,8 +951,8 @@ describe Her::Model::Associations do
           end
         end
 
-        Foo::User.use_api Her::API.default_api
-        Foo::Comment.use_api Her::API.default_api
+        Foo::User.use_api Him::API.default_api
+        Foo::Comment.use_api Him::API.default_api
       end
 
       it "appends built resource to the existing collection" do
@@ -965,8 +965,8 @@ describe Her::Model::Associations do
 
     context "with #create when collection already has data" do
       before do
-        Her::API.setup url: "https://api.example.com" do |builder|
-          builder.use Her::Middleware::FirstLevelParseJSON
+        Him::API.setup url: "https://api.example.com" do |builder|
+          builder.use Him::Middleware::FirstLevelParseJSON
           builder.use Faraday::Request::UrlEncoded
           builder.adapter :test do |stub|
             stub.get("/users/10") { [200, {}, { id: 10 }.to_json] }
@@ -975,8 +975,8 @@ describe Her::Model::Associations do
           end
         end
 
-        Foo::User.use_api Her::API.default_api
-        Foo::Comment.use_api Her::API.default_api
+        Foo::User.use_api Him::API.default_api
+        Foo::Comment.use_api Him::API.default_api
       end
 
       it "appends to the existing collection" do
