@@ -12,12 +12,40 @@ module Her
       def parse(body)
         json = parse_json(body)
 
+        included = json.fetch(:included, [])
+        primary_data = json.fetch(:data, {})
+        Array(primary_data).each do |resource|
+          next unless resource.is_a?(Hash)
+          relationships = resource.delete(:relationships) { {} }
+          resource[:attributes].merge!(resolve_relationships(relationships, included))
+        end
+
         {
-          :data => json[:data] || {},
-          :errors => json[:errors] || [],
-          :metadata => json[:meta] || {},
+          data: primary_data || {},
+          errors: json[:errors] || [],
+          metadata: json[:meta] || {}
         }
       end
+
+      private
+
+      def resolve_relationships(relationships, included)
+        return {} if included.empty? || relationships.nil?
+        relationships.each_with_object({}) do |(rel_name, linkage), built|
+          linkage_data = linkage.fetch(:data, {})
+          built[rel_name] = if linkage_data.is_a?(Array)
+            linkage_data.map { |l| find_included(l, included) }.compact
+          else
+            find_included(linkage_data, included)
+          end
+        end
+      end
+
+      def find_included(linkage, included)
+        included.detect { |i| i.values_at(:id, :type) == linkage.values_at(:id, :type) }
+      end
+
+      public
 
       # This method is triggered when the response has been received. It modifies
       # the value of `env[:body]`.
