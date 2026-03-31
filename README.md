@@ -1,9 +1,15 @@
+[![Version     ](https://img.shields.io/gem/v/him.svg)](https://rubygems.org/gems/him)
+[![CI Status   ](https://github.com/TwilightCoders/him/actions/workflows/ci.yml/badge.svg)](https://github.com/TwilightCoders/him/actions/workflows/ci.yml)
+[![Maintainability](https://qlty.sh/gh/TwilightCoders/projects/him/maintainability.svg)](https://qlty.sh/gh/TwilightCoders/projects/him)
+[![Code Coverage](https://qlty.sh/gh/TwilightCoders/projects/him/coverage.svg)](https://qlty.sh/gh/TwilightCoders/projects/him)
+[![License     ](https://img.shields.io/github/license/TwilightCoders/him.svg)](https://github.com/TwilightCoders/him/blob/main/LICENSE)
+
 # Him
 
 Him is an ORM (Object Relational Mapper) that maps REST resources to Ruby objects.
 It is designed to build applications that are powered by a RESTful API instead of a database.
 
-Forked from [Her](https://github.com/remi/her) and modernized for current Ruby/Rails.
+The spiritual successor of [Her](https://github.com/remi/her), modernized for current Ruby/Rails.
 
 **Requirements:** Ruby >= 3.1, ActiveModel >= 6.1, Faraday >= 2.0
 
