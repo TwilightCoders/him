@@ -39,10 +39,15 @@ module Her
       def save
         callback = new? ? :create : :update
         method = self.class.method_for(callback)
+        path = if new?
+          self.class.build_request_path(self.class.collection_path, attributes.except(self.class.primary_key))
+        else
+          request_path
+        end
 
         run_callbacks :save do
           run_callbacks callback do
-            self.class.request(to_params.merge(_method: method, _path: request_path)) do |parsed_data, response|
+            self.class.request(to_params.merge(_method: method, _path: path)) do |parsed_data, response|
               load_from_parsed_data(parsed_data)
               return false if !response.success? || @response_errors.any?
               @_her_new_record = false

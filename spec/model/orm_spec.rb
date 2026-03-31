@@ -71,6 +71,7 @@ describe Her::Model::ORM do
       @existing_user = Foo::AdminUser.find(1)
       expect(@existing_user).not_to be_new
     end
+
   end
 
   context "mapping data, metadata and error data to Ruby objects" do
@@ -397,6 +398,12 @@ describe Her::Model::ORM do
       @company = Foo::Company.new(name: "Company Inc.")
       expect(@company.save).to be_falsey
       expect(@company.name).to eq("Company Inc.")
+    end
+
+    it "POSTs to collection path even with a pre-assigned id" do
+      @user = Foo::User.create(id: 1234, fullname: "Tobias Fünke")
+      expect(@user.fullname).to eq("Tobias Fünke")
+      expect(@user).to be_persisted
     end
   end
 
