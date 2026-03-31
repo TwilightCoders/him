@@ -391,6 +391,39 @@ describe Her::Model::Parse do
     end
   end
 
+  context "when parsed_data has string keys" do
+    before do
+      Her::API.setup url: "https://api.example.com" do |builder|
+        builder.use Class.new(Faraday::Middleware) {
+          def on_complete(env)
+            env[:body] = {
+              "data" => JSON.parse(env[:body]),
+              "metadata" => {},
+              "errors" => {}
+            }
+          end
+        }
+        builder.adapter :test do |stub|
+          stub.get("/users") { [200, {}, [{ "id" => 1, "name" => "Tobias" }].to_json] }
+          stub.get("/users/1") { [200, {}, { "id" => 1, "name" => "Tobias" }.to_json] }
+        end
+      end
+
+      spawn_model "Foo::User"
+    end
+
+    it "handles collections with string-keyed parsed data" do
+      users = Foo::User.all
+      expect(users.length).to eq(1)
+      expect(users.first.name).to eq("Tobias")
+    end
+
+    it "handles single resources with string-keyed parsed data" do
+      user = Foo::User.find(1)
+      expect(user.name).to eq("Tobias")
+    end
+  end
+
   context "when parse_root_in_json set json_api to true" do
     before do
       Her::API.setup url: "https://api.example.com" do |builder|

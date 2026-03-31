@@ -54,11 +54,13 @@ module Her
         # @private
         def request(params = {})
           request = her_api.request(params)
+          parsed_data = request[:parsed_data]
+          parsed_data = parsed_data.symbolize_keys if parsed_data.respond_to?(:symbolize_keys)
 
           if block_given?
-            yield request[:parsed_data], request[:response]
+            yield parsed_data, request[:response]
           else
-            { :parsed_data => request[:parsed_data], :response => request[:response] }
+            { parsed_data: parsed_data, response: request[:response] }
           end
         end
 
