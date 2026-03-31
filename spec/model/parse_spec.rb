@@ -358,6 +358,33 @@ describe Her::Model::Parse do
     end
   end
 
+  context "when parse_root_in_json is true without AMS format" do
+    before do
+      Her::API.setup url: "https://api.example.com" do |builder|
+        builder.use Her::Middleware::FirstLevelParseJSON
+        builder.adapter :test do |stub|
+          stub.get("/users") { [200, {}, { users: [{ id: 1, name: "Tobias" }] }.to_json] }
+          stub.get("/users/1") { [200, {}, { user: { id: 1, name: "Tobias" } }.to_json] }
+        end
+      end
+
+      spawn_model "Foo::User" do
+        parse_root_in_json true
+      end
+    end
+
+    it "unwraps collection root key" do
+      users = Foo::User.all
+      expect(users.length).to eq(1)
+      expect(users.first.name).to eq("Tobias")
+    end
+
+    it "unwraps single resource root key" do
+      user = Foo::User.find(1)
+      expect(user.name).to eq("Tobias")
+    end
+  end
+
   context "when associations reference each other" do
     before do
       Her::API.setup url: "https://api.example.com" do |builder|
