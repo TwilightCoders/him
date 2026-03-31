@@ -1,5 +1,17 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), "..", "lib")
 
+if ENV["COVERAGE"]
+  require "simplecov"
+  require "simplecov-json"
+  SimpleCov.start do
+    add_filter "spec"
+    SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::JSONFormatter
+    ])
+  end
+end
+
 require "rspec"
 require "him"
 
