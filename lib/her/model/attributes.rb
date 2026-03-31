@@ -28,6 +28,7 @@ module Her
         @metadata = attributes.delete(:_metadata) || {}
         @response_errors = attributes.delete(:_errors) || {}
         @destroyed = attributes.delete(:_destroyed) || false
+        @_her_new_record = attributes.delete(:_new_record) { true }
 
         attributes = self.class.default_scope.apply_to(attributes)
         assign_attributes(attributes)
@@ -187,7 +188,8 @@ module Her
             record
           else
             attributes = klass.parse(record).merge(_metadata: parsed_data[:metadata],
-                                                   _errors: parsed_data[:errors])
+                                                   _errors: parsed_data[:errors],
+                                                   _new_record: false)
             klass.new(attributes).tap do |record_instance|
               record_instance.send :clear_changes_information
               record_instance.run_callbacks :find

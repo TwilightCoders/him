@@ -8,7 +8,7 @@ module Her
 
       # Return `true` if a resource was not saved yet
       def new?
-        id.nil?
+        @_her_new_record
       end
       alias new_record? new?
 
@@ -42,9 +42,10 @@ module Her
 
         run_callbacks :save do
           run_callbacks callback do
-            self.class.request(to_params.merge(:_method => method, :_path => request_path)) do |parsed_data, response|
+            self.class.request(to_params.merge(_method: method, _path: request_path)) do |parsed_data, response|
               load_from_parsed_data(parsed_data)
               return false if !response.success? || @response_errors.any?
+              @_her_new_record = false
               changes_applied
             end
           end
@@ -235,7 +236,7 @@ module Her
 
         # Similar to .save_existing but raises ResourceInvalid if save fails
         def save_existing!(id, params)
-          resource = new(params.merge(primary_key => id))
+          resource = new(params.merge(primary_key => id, _new_record: false))
           resource.save!
           resource
         end
@@ -280,9 +281,10 @@ module Her
           method = method_for(:new)
 
           resource = nil
-          request(params.merge(:_method => method, :_path => path)) do |parsed_data, response|
+          request(params.merge(_method: method, _path: path)) do |parsed_data, response|
             if response.success?
               resource = new_from_parsed_data(parsed_data)
+              resource.instance_variable_set(:@_her_new_record, true)
             end
           end
           resource

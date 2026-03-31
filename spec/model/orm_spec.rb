@@ -58,6 +58,12 @@ describe Her::Model::ORM do
       expect(@existing_user.new_record?).to be_falsey
     end
 
+    it "treats new resource with pre-assigned id as new" do
+      @user = Foo::User.new(id: 5, fullname: "Tobias Fünke")
+      expect(@user.new?).to be_truthy
+      expect(@user.persisted?).to be_falsey
+    end
+
     it "handles new resource with custom primary key" do
       @new_user = Foo::AdminUser.new(fullname: "Lindsay Fünke", id: -1)
       expect(@new_user).to be_new
