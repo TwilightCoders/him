@@ -1,17 +1,10 @@
 
-<p align="center">
-  <a href="https://github.com/remiprev/her">
-    <img src="http://i.imgur.com/43KEchq.png" alt="Her" />
-  </a>
-  <br />
-  Her is an ORM (Object Relational Mapper) that maps REST resources to Ruby objects.<br /> It is designed to build applications that are powered by a RESTful API instead of a database.
-  <br /><br />
-  <a href="https://rubygems.org/gems/her"><img src="http://img.shields.io/gem/v/her.svg" /></a>
-  <a href="https://codeclimate.com/github/remiprev/her"><img src="http://img.shields.io/codeclimate/github/remiprev/her.svg" /></a>
-  <a href='https://gemnasium.com/remiprev/her'><img src="http://img.shields.io/gemnasium/remiprev/her.svg" /></a>
-  <a href="https://travis-ci.org/remiprev/her"><img src="http://img.shields.io/travis/remiprev/her/master.svg" /></a>
-  <a href="https://gitter.im/her-orm/Lobby"><img src="https://badges.gitter.im/her-orm/Lobby.png" alt="Gitter chat" title="" data-pin-nopin="true"></a>
-</p>
+# Her
+
+Her is an ORM (Object Relational Mapper) that maps REST resources to Ruby objects.
+It is designed to build applications that are powered by a RESTful API instead of a database.
+
+**Requirements:** Ruby >= 3.1, ActiveModel >= 6.1, Faraday >= 2.0
 
 ---
 
@@ -27,8 +20,6 @@ That’s it!
 
 ## Usage
 
-_For a complete reference of all the methods you can use, check out [the documentation](http://rdoc.info/github/remiprev/her)._
-
 First, you have to define which API your models will be bound to. For example, with Rails, you would create a new `config/initializers/her.rb` file with these lines:
 
 ```ruby
@@ -41,7 +32,7 @@ Her::API.setup url: "https://api.example.com" do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
@@ -91,10 +82,6 @@ user.fullname = "Lindsay Fünke" # OR user.assign_attributes(fullname: "Lindsay 
 user.save # returns false if it fails, errors in user.response_errors array
 # PUT "/users/1" with `fullname=Lindsay+Fünke`
 
-user.update_attributes(fullname: "Maeby Fünke")
-# PUT "/users/1" with `fullname=Maeby+Fünke`
-
-# => PUT /users/1 { "id": 1, "name": "new new name" }
 # Update a resource without fetching it
 User.save_existing(1, fullname: "Lindsay Fünke")
 # PUT "/users/1" with `fullname=Lindsay+Fünke`
@@ -124,8 +111,6 @@ user.save! # raises Her::Errors::ResourceInvalid if it fails
 # POST "/users" with `fullname=Maeby+Fünke`
 ```
 
-You can look into the [`her-example`](https://github.com/remiprev/her-example) repository for a sample application using Her.
-
 ## Middleware
 
 Since Her relies on [Faraday](https://github.com/lostisland/faraday) to send HTTP requests, you can choose the middleware used to handle requests and responses. Using the block in the `setup` call, you have access to Faraday’s `connection` object and are able to customize the middleware stack used on each request and response.
@@ -139,7 +124,7 @@ For example, to add a token header to your API requests in a Rails application, 
 ```ruby
 # app/controllers/application_controller.rb
 class ApplicationController < ActionController::Base
-  before_filter :set_user_api_token
+  before_action :set_user_api_token
 
   protected
   def set_user_api_token
@@ -167,27 +152,28 @@ Her::API.setup url: "https://api.example.com" do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
 Now, each HTTP request made by Her will have the `X-API-Token` header.
 
-### Basic Http Authentication
-Her can use basic http auth by adding a line to your initializer
+### Basic HTTP Authentication
+
+Her can use basic HTTP auth by adding a line to your initializer:
 
 ```ruby
 # config/initializers/her.rb
 Her::API.setup url: "https://api.example.com" do |c|
   # Request
-  c.use Faraday::Request::BasicAuthentication, 'myusername', 'mypassword'
+  c.request :authorization, :basic, 'myusername', 'mypassword'
   c.use Faraday::Request::UrlEncoded
 
   # Response
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
@@ -222,7 +208,7 @@ Her::API.setup url: "https://api.twitter.com/1/" do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 
 class Tweet
@@ -258,9 +244,9 @@ Also, you can define your own parsing method using a response middleware. The mi
 #       "errors": []
 #     }
 #
-class MyCustomParser < Faraday::Response::Middleware
+class MyCustomParser < Faraday::Middleware
   def on_complete(env)
-    json = MultiJson.load(env[:body], symbolize_keys: true)
+    json = JSON.parse(env[:body], symbolize_names: true)
     env[:body] = {
       data: json[:result],
       errors: json[:errors],
@@ -274,7 +260,7 @@ Her::API.setup url: "https://api.example.com" do |c|
   c.use MyCustomParser
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
@@ -301,7 +287,7 @@ Her::API.setup url: "https://api.example.com" do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 
 class User
@@ -662,7 +648,7 @@ Her::API.setup url: 'https://my_awesome_json_api_service' do |c|
   c.use Her::Middleware::JsonApiParser
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
@@ -869,7 +855,7 @@ MY_API.setup url: "https://my-api.example.com" do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 
 OTHER_API = Her::API.new
@@ -878,7 +864,7 @@ OTHER_API.setup url: "https://other-api.example.com" do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
@@ -913,7 +899,7 @@ Her::API.setup url: "https://api.example.com", ssl: ssl_options do |c|
   c.use Her::Middleware::DefaultParseJSON
 
   # Adapter
-  c.use Faraday::Adapter::NetHttp
+  c.adapter :net_http
 end
 ```
 
@@ -1009,57 +995,12 @@ end
 
 See the [UPGRADE.md](https://github.com/remiprev/her/blob/master/UPGRADE.md) for backward compatibility issues.
 
-## Her IRL
-
-Most projects I know that use Her are internal or private projects but here’s a list of public ones:
-
-* [tumbz](https://github.com/remiprev/tumbz)
-* [zoho-ruby](https://github.com/errorstudio/zoho-ruby)
-* [crowdher](https://github.com/simonprev/crowdher)
-* [vodka](https://github.com/magnolia-fan/vodka)
-* [webistrano_cli](https://github.com/chytreg/webistrano_cli)
-* [ASMALLWORLD](https://www.asmallworld.com)
-
-## History
-
-I told myself a few months ago that it would be great to build a gem to replace Rails’ [ActiveResource](http://api.rubyonrails.org/classes/ActiveResource/Base.html) since it was barely maintained (and now removed from Rails 4.0), lacking features and hard to extend/customize. I had built a few of these REST-powered ORMs for client projects before but I decided I wanted to write one for myself that I could release as an open-source project.
-
-Most of Her’s core concepts were written on a Saturday morning of April 2012 ([first commit](https://github.com/remiprev/her/commit/689d8e88916dc2ad258e69a2a91a283f061cbef2) at 7am!).
-
-## Maintainers
-The gem is currently maintained by [@zacharywelch](https://github.com/zacharywelch) and [@edtjones](https://github.com/edtjones).
-
 ## Contribute
 
-Yes please! Feel free to contribute and submit issues/pull requests [on GitHub](https://github.com/remiprev/her/issues). There’s no such thing as a bad pull request — even if it’s for a typo, a small improvement to the code or the documentation!
+Feel free to contribute and submit issues/pull requests [on GitHub](https://github.com/remiprev/her/issues).
 
 See [CONTRIBUTING.md](https://github.com/remiprev/her/blob/master/CONTRIBUTING.md) for best practices.
 
-### Contributors
-
-These [fine folks](https://github.com/remiprev/her/contributors) helped with Her:
-
-* [@jfcixmedia](https://github.com/jfcixmedia)
-* [@EtienneLem](https://github.com/EtienneLem)
-* [@rafaelss](https://github.com/rafaelss)
-* [@tysontate](https://github.com/tysontate)
-* [@nfo](https://github.com/nfo)
-* [@simonprevost](https://github.com/simonprevost)
-* [@jmlacroix](https://github.com/jmlacroix)
-* [@thomsbg](https://github.com/thomsbg)
-* [@calmyournerves](https://github.com/calmyournerves)
-* [@luflux](https://github.com/luxflux)
-* [@simonc](https://github.com/simonc)
-* [@pencil](https://github.com/pencil)
-* [@joanniclaborde](https://github.com/joanniclaborde)
-* [@seanreads](https://github.com/seanreads)
-* [@jonkarna](https://github.com/jonkarna)
-* [@aclevy](https://github.com/aclevy)
-* [@stevschmid](https://github.com/stevschmid)
-* [@prognostikos](https://github.com/prognostikos)
-* [@dturnerTS](https://github.com/dturnerTS)
-* [@kritik](https://github.com/kritik)
-
 ## License
 
-Her is © 2012-2013 [Rémi Prévost](http://exomel.com) and may be freely distributed under the [MIT license](https://github.com/remiprev/her/blob/master/LICENSE). See the `LICENSE` file.
+Her is © 2012-2026 [Rémi Prévost](http://exomel.com) and may be freely distributed under the [MIT license](https://github.com/remiprev/her/blob/master/LICENSE). See the `LICENSE` file.
