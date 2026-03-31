@@ -38,4 +38,33 @@ describe Her::Collection do
       end
     end
   end
+
+  describe "Array methods preserve Collection type" do
+    subject { Her::Collection.new(items, metadata, errors) }
+
+    it "returns a Collection from #select" do
+      result = subject.select(&:odd?)
+      expect(result).to be_a(Her::Collection)
+      expect(result).to eq([1, 3])
+      expect(result.metadata).to eq(name: "Testname")
+    end
+
+    it "returns a Collection from #reject" do
+      result = subject.reject(&:odd?)
+      expect(result).to be_a(Her::Collection)
+      expect(result).to eq([2, 4])
+    end
+
+    it "returns a Collection from #map" do
+      result = subject.map { |x| x * 2 }
+      expect(result).to be_a(Her::Collection)
+      expect(result).to eq([2, 4, 6, 8])
+    end
+
+    it "returns a Collection from #first with count" do
+      result = subject.first(2)
+      expect(result).to be_a(Her::Collection)
+      expect(result).to eq([1, 2])
+    end
+  end
 end
