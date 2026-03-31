@@ -336,6 +336,12 @@ describe Her::Model::Attributes do
       expect(user.class.name).to eq("Foo::User")
     end
 
+    it "does not crash when data includes an 'attributes' key" do
+      user = Foo::User.new(attributes: { foo: "bar" })
+      expect(user.attributes).to be_a(Hash)
+      expect(user.attributes[:attributes]).to eq("foo" => "bar")
+    end
+
     context "when attribute methods are already defined" do
       before do
         class AbstractUser

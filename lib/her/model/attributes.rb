@@ -230,10 +230,11 @@ module Her
         #
         # @private
         def use_setter_methods(model, params = {})
-          reserved = [:id, :class, model.class.primary_key, *model.class.association_keys]
-          model.class.attributes *params.keys.reject { |k| reserved.include?(k) }
+          reserved = [:id, :class, :attributes, model.class.primary_key, *model.class.association_keys]
+          settable_params = params.reject { |k, _| reserved.include?(k.to_sym) }
+          model.class.attributes *settable_params.keys
 
-          params.each_with_object({}) do |(key, value), memo|
+          settable_params.each_with_object(params.slice(*reserved)) do |(key, value), memo|
             setter_method = "#{key}="
             if model.respond_to_without_missing?(setter_method)
               model.send setter_method, value
