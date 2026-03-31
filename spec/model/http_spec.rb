@@ -183,19 +183,5 @@ describe Her::Model::HTTP do
       end
     end
 
-    context "with options" do
-      before do
-        allow(Foo::User).to receive(:warn)
-        Foo::User.custom_get :popular, foo: "bar"
-      end
-
-      it "issues DEPRECATION warning" do
-        expect(Foo::User).to have_received(:warn).with("[DEPRECATION] options for custom request methods are deprecated and will be removed on or after January 2020.")
-      end
-
-      it "makes HTTP request" do
-        expect(Foo::User.popular.length).to be 2
-      end
-    end
   end
 end

@@ -188,7 +188,7 @@ module Her
         #   User.page(2).all # Called via GET "/users?page=2"
         def scope(name, code)
           # Add the scope method to the class
-          (class << self; self end).send(:define_method, name) do |*args|
+          singleton_class.send(:define_method, name) do |*args|
             instance_exec(*args, &code)
           end
 

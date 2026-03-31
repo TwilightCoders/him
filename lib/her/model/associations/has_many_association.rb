@@ -49,8 +49,6 @@ module Her
         #   user = User.find(1)
         #   new_comment = user.comments.build(:body => "Hello!")
         #   new_comment # => #<Comment user_id=1 body="Hello!">
-        # TODO: This only merges the id of the parents, handle the case
-        #       where this is more deeply nested
         def build(attributes = {})
           @klass.build(attributes.merge(foreign_key => @parent.id))
         end

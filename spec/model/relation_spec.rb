@@ -179,6 +179,7 @@ describe Her::Model::Relation do
       expect(Foo::User.scoped.baz.params[:where]).to eq(6)
       expect(Bar::User.scoped.baz.params[:where]).to eq(7)
     end
+
   end
 
   describe :default_scope do

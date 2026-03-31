@@ -1,5 +1,4 @@
 require "her/model/base"
-require "her/model/deprecated_methods"
 require "her/model/http"
 require "her/model/attributes"
 require "her/model/relation"
@@ -27,7 +26,6 @@ module Her
 
     # Her modules
     include Her::Model::Base
-    include Her::Model::DeprecatedMethods
     include Her::Model::Attributes
     include Her::Model::ORM
     include Her::Model::HTTP
