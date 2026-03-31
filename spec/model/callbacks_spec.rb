@@ -127,6 +127,24 @@ describe "Her::Model and ActiveModel::Callbacks" do
       end
     end
 
+    context "callback invocation count" do
+      before do
+        spawn_model "User" do
+          attr_accessor :find_count
+          after_find :track_find
+          def track_find
+            self.find_count ||= 0
+            self.find_count += 1
+          end
+        end
+      end
+
+      it "calls after_find exactly once" do
+        user = User.find(1)
+        expect(user.find_count).to eq(1)
+      end
+    end
+
     context "when using a block callback" do
       before do
         spawn_model "User" do
