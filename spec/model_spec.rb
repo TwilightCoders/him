@@ -42,4 +42,14 @@ describe Her::Model do
     specify { expect(subject[:name]).to eq("Tobias Fünke") }
     specify { expect(subject[:comments].first.body).to eq("They're having a FIRESALE?") }
   end
+
+  describe :dup do
+    it "does not share mutable state between original and copy" do
+      original = Foo::User.find(1)
+      copy = original.dup
+      copy.name = "Lindsay Fünke"
+      expect(original.name).to eq("Tobias Fünke")
+      expect(copy.name).to eq("Lindsay Fünke")
+    end
+  end
 end

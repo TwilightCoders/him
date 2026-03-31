@@ -35,6 +35,16 @@ module Her
         run_callbacks :initialize
       end
 
+      # Ensure dup/clone creates a deep copy of mutable state
+      #
+      # @private
+      def initialize_copy(other)
+        super
+        @_her_attributes = other.attributes.dup
+        @metadata = other.metadata.dup if other.metadata
+        @response_errors = other.response_errors.dup if other.response_errors
+      end
+
       # Handles missing methods
       #
       # @private
